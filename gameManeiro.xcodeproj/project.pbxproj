@@ -25,6 +25,7 @@
 		1BE1686718CE3B39001E852D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE1683F18CE3B39001E852D /* UIKit.framework */; };
 		1BE1686F18CE3B39001E852D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1BE1686D18CE3B39001E852D /* InfoPlist.strings */; };
 		1BE1687118CE3B39001E852D /* gameManeiroTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE1687018CE3B39001E852D /* gameManeiroTests.m */; };
+		1BE1687B18CE4274001E852D /* moto1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1BE1687A18CE4274001E852D /* moto1.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		1BE1686C18CE3B39001E852D /* gameManeiroTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "gameManeiroTests-Info.plist"; sourceTree = "<group>"; };
 		1BE1686E18CE3B39001E852D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1BE1687018CE3B39001E852D /* gameManeiroTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = gameManeiroTests.m; sourceTree = "<group>"; };
+		1BE1687A18CE4274001E852D /* moto1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moto1.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +129,7 @@
 				1BE1684D18CE3B39001E852D /* AppDelegate.m */,
 				1BE1684F18CE3B39001E852D /* Main_iPhone.storyboard */,
 				1BE1685218CE3B39001E852D /* Main_iPad.storyboard */,
+				1BE1687A18CE4274001E852D /* moto1.png */,
 				1BE1685518CE3B39001E852D /* ViewController.h */,
 				1BE1685618CE3B39001E852D /* ViewController.m */,
 				1BE1685818CE3B39001E852D /* MyScene.h */,
@@ -245,6 +248,7 @@
 			files = (
 				1BE1685C18CE3B39001E852D /* Spaceship.png in Resources */,
 				1BE1685E18CE3B39001E852D /* Images.xcassets in Resources */,
+				1BE1687B18CE4274001E852D /* moto1.png in Resources */,
 				1BE1685418CE3B39001E852D /* Main_iPad.storyboard in Resources */,
 				1BE1685118CE3B39001E852D /* Main_iPhone.storyboard in Resources */,
 				1BE1684818CE3B39001E852D /* InfoPlist.strings in Resources */,

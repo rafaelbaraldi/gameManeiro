@@ -16,14 +16,22 @@
         
         self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:1.0];
         
-        SKLabelNode *myLabel = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
         
-        myLabel.text = @"Hello, World!";
-        myLabel.fontSize = 30;
-        myLabel.position = CGPointMake(CGRectGetMidX(self.frame),
-                                       CGRectGetMidY(self.frame));
+        self.moto = [SKSpriteNode spriteNodeWithImageNamed:@"moto1.png"];
         
-        [self addChild:myLabel];
+        [self.moto setSize:CGSizeMake(150, 133)];
+        [self.moto setPosition:CGPointMake(120, 375)];
+        
+        self.moto.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:self.moto.size.width / 2];
+        self.moto.physicsBody.dynamic = YES;
+        self.moto.physicsBody.affectedByGravity = YES;
+        self.moto.physicsBody.allowsRotation = YES;
+        self.moto.physicsBody.density = 0.6f;
+        self.moto.physicsBody.restitution = 0;
+        
+        
+        [self addChild:self.moto];
+
     }
     return self;
 }
@@ -34,15 +42,7 @@
     for (UITouch *touch in touches) {
         CGPoint location = [touch locationInNode:self];
         
-        SKSpriteNode *sprite = [SKSpriteNode spriteNodeWithImageNamed:@"Spaceship"];
-        
-        sprite.position = location;
-        
-        SKAction *action = [SKAction rotateByAngle:M_PI duration:1];
-        
-        [sprite runAction:[SKAction repeatActionForever:action]];
-        
-        [self addChild:sprite];
+
     }
 }
 

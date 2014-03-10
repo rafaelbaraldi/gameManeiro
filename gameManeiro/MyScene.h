@@ -10,4 +10,6 @@
 
 @interface MyScene : SKScene
 
+@property SKSpriteNode* moto;
+
 @end
