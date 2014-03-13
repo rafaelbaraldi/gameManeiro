@@ -16,12 +16,14 @@
         
         _timeArray = [[NSMutableArray alloc]init];
         
+        self.physicsWorld.contactDelegate = self;
+        
         //self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:1.0];
         [self createFrameWithAtlasBackground:@"Background" :@"background"];
         [self movingBackground:@"MovingBike" :_backgroundFrames];
         
-        [self createFrameWithAtlas];
-        [self walkingMoto];
+//        [self createFrameWithAtlas];
+//        [self walkingMoto];
         
         
         
@@ -30,14 +32,14 @@
         
         
 //        self.moto = [SKSpriteNode spriteNodeWithImageNamed:@"moto1.png"];
-//        self.moto = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithRed:0.4f green:0.5f blue:0.7f alpha:1.0f] size:CGSizeMake(120, 35)];
+        self.moto = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithRed:0.4f green:0.5f blue:0.7f alpha:1.0f] size:CGSizeMake(120, 35)];
         
 //        SKSpriteNode* imagemMoto = [SKSpriteNode spriteNodeWithImageNamed:@"moto1.png"];
 //        [imagemMoto setSize:CGSizeMake(150, 133)];
 //        [imagemMoto setPosition:CGPointMake(120, 500)];
 //        [self addChild:imagemMoto];
         
-        [self.moto setSize:CGSizeMake(150, 133)];
+//        [self.moto setSize:CGSizeMake(150, 133)];
         [self.moto setPosition:CGPointMake(120, 500)];
         
         self.moto.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(120, 35)];
@@ -47,13 +49,16 @@
         self.moto.physicsBody.density = 0.6f;
         self.moto.physicsBody.restitution = 0.3;
         
-//        [self addChild:self.moto];
+        [self addChild:self.moto];
         
         _cabeca = [SKSpriteNode spriteNodeWithColor:[UIColor redColor] size:CGSizeMake(28, 45)];
         _cabeca.position = CGPointMake(113, 542);
         _cabeca.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(28, 45)];
         _cabeca.physicsBody.dynamic = YES;
-        _cabeca.alpha = 0;
+//        _cabeca.alpha = 0;
+        _cabeca.physicsBody.categoryBitMask = cabecaCategory;
+        _cabeca.physicsBody.contactTestBitMask = barrilCategory | chaoCategory;
+        _cabeca.physicsBody.usesPreciseCollisionDetection = YES;
         
         [self addChild:_cabeca];
         
@@ -64,7 +69,7 @@
         
         // Create the left wheel
         self.leftWheelNode = [SKSpriteNode spriteNodeWithImageNamed:@"bolaL.png"];
-        self.leftWheelNode.alpha = 0;
+//        self.leftWheelNode.alpha = 0;
         self.leftWheelNode.size = CGSizeMake(45, 45);
         self.leftWheelNode.position = CGPointMake(self.moto.position.x-51, 457);
         self.leftWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:22.5];
@@ -73,7 +78,7 @@
         
         // Create the right wheel
         self.rightWheelNode = [SKSpriteNode spriteNodeWithImageNamed:@"bolaR.png"];
-        self.rightWheelNode.alpha = 0;
+//        self.rightWheelNode.alpha = 0;
         self.rightWheelNode.size = CGSizeMake(45, 45);
         self.rightWheelNode.position = CGPointMake(self.moto.position.x+51, 457);
         self.rightWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:22.5];
@@ -97,6 +102,8 @@
         self.chao.physicsBody.dynamic = NO;
         self.chao.physicsBody.density = 1.0f;
         self.chao.physicsBody.restitution = 0;
+        self.chao.physicsBody.categoryBitMask = chaoCategory;
+        self.chao.physicsBody.contactTestBitMask = cabecaCategory;
         
         [self addChild:self.chao];
         
@@ -115,6 +122,12 @@
 
     }
     return self;
+}
+
+-(void)didBeginContact:(SKPhysicsContact *)contact{
+    if(contact.bodyA.categoryBitMask == cabecaCategory || contact.bodyB.categoryBitMask == cabecaCategory){
+        NSLog(@"morreu");
+    }
 }
 
 -(void)createFrameWithAtlasBackground:(NSString*)pasta :(NSString*)imagem{

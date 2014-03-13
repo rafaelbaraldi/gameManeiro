@@ -8,7 +8,13 @@
 
 #import <SpriteKit/SpriteKit.h>
 
-@interface MyScene : SKScene
+static const UInt32 cabecaCategory = 0x1 << 0;
+
+static const UInt32 barrilCategory = 0x1 << 1;
+
+static const UInt32 chaoCategory = 0x1 << 2;
+
+@interface MyScene : SKScene <SKPhysicsContactDelegate>
 
 @property SKSpriteNode* moto;
 @property SKSpriteNode* cabeca;
@@ -20,5 +26,6 @@
 
 @property NSArray *motoFrames;
 @property NSArray *backgroundFrames;
+
 
 @end
