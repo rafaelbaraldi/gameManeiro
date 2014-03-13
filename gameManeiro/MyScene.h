@@ -32,6 +32,8 @@ static const UInt32 chaoCategory = 0x1 << 2;
 @property SKSpriteNode *cloud;
 @property SKSpriteNode *cloud2;
 
+@property SKLabelNode* playNode;
+
 @property BOOL firstTouch;
 
 @end

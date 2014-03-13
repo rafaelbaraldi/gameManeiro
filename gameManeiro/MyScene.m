@@ -33,9 +33,18 @@
         [self createChao];
         [self createBordas];
       
-
+        [self createPlayButton];
     }
     return self;
+}
+
+-(void)createPlayButton{
+    _playNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+    _playNode.fontSize = 50;
+    _playNode.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+    _playNode.fontColor = [UIColor redColor];
+    _playNode.text = @"PLAY";
+    [self addChild:_playNode];
 }
 
 -(void)testBodyWithImages{
@@ -247,6 +256,8 @@
         [self moverFundo];
         [self moverNuvens];
         [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(moverNuvem2) userInfo:nil repeats:NO];
+        
+        [_playNode removeFromParent];
         
         _firstTouch = NO;
     }

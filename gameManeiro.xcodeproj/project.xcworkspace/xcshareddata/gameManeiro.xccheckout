@@ -5,19 +5,19 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>891AFBC4-9C08-4DE5-8B10-B1878CF840CE</string>
+	<string>2BCE6070-9AC9-43FE-A98A-1414571E28BA</string>
 	<key>IDESourceControlProjectName</key>
 	<string>gameManeiro</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>E8EC1574-3375-46BC-9B91-3EDEC01B04CB</key>
+		<key>974F7AB0-3F8F-4C97-B5E0-CA1DA1D1A8AC</key>
 		<string>https://github.com/rafaelbaraldi/gameManeiro.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>gameManeiro.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>E8EC1574-3375-46BC-9B91-3EDEC01B04CB</key>
+		<key>974F7AB0-3F8F-4C97-B5E0-CA1DA1D1A8AC</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
@@ -25,14 +25,14 @@
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>E8EC1574-3375-46BC-9B91-3EDEC01B04CB</string>
+	<string>974F7AB0-3F8F-4C97-B5E0-CA1DA1D1A8AC</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>E8EC1574-3375-46BC-9B91-3EDEC01B04CB</string>
+			<string>974F7AB0-3F8F-4C97-B5E0-CA1DA1D1A8AC</string>
 			<key>IDESourceControlWCCName</key>
 			<string>gameManeiro</string>
 		</dict>
