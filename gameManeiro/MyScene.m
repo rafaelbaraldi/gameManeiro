@@ -14,114 +14,50 @@
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         
+        _transparencia = 0;
+        
         _timeArray = [[NSMutableArray alloc]init];
         
         self.physicsWorld.contactDelegate = self;
         
-        //self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:1.0];
         [self createFrameWithAtlasBackground:@"Background" :@"background"];
         [self movingBackground:@"MovingBike" :_backgroundFrames];
         
-//        [self createFrameWithAtlas];
-//        [self walkingMoto];
+        [self createMoto];
+        [self walkingMoto];
         
+        //testa os corpos da moto ( precisa comentar dois os metodos de cima)
+//        [self testBodyWithImages];
         
+        [self createRodas];
+        [self createCabeca];
         
-        CGRect borderRect = CGRectMake(0, 0, self.size.width, self.size.height);
-        self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:borderRect];
-        
-        
-//        self.moto = [SKSpriteNode spriteNodeWithImageNamed:@"moto1.png"];
-        self.moto = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithRed:0.4f green:0.5f blue:0.7f alpha:1.0f] size:CGSizeMake(120, 35)];
-        
-//        SKSpriteNode* imagemMoto = [SKSpriteNode spriteNodeWithImageNamed:@"moto1.png"];
-//        [imagemMoto setSize:CGSizeMake(150, 133)];
-//        [imagemMoto setPosition:CGPointMake(120, 500)];
-//        [self addChild:imagemMoto];
-        
-//        [self.moto setSize:CGSizeMake(150, 133)];
-        [self.moto setPosition:CGPointMake(120, 500)];
-        
-        self.moto.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(120, 35)];
-        self.moto.physicsBody.dynamic = YES;
-        self.moto.physicsBody.affectedByGravity = YES;
-        self.moto.physicsBody.allowsRotation = YES;
-        self.moto.physicsBody.density = 0.6f;
-        self.moto.physicsBody.restitution = 0.3;
-        
-        [self addChild:self.moto];
-        
-        _cabeca = [SKSpriteNode spriteNodeWithColor:[UIColor redColor] size:CGSizeMake(28, 45)];
-        _cabeca.position = CGPointMake(113, 542);
-        _cabeca.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(28, 45)];
-        _cabeca.physicsBody.dynamic = YES;
-//        _cabeca.alpha = 0;
-        _cabeca.physicsBody.categoryBitMask = cabecaCategory;
-        _cabeca.physicsBody.contactTestBitMask = barrilCategory | chaoCategory;
-        _cabeca.physicsBody.usesPreciseCollisionDetection = YES;
-        
-        [self addChild:_cabeca];
-        
-        SKPhysicsJointFixed* headJoint = [SKPhysicsJointFixed jointWithBodyA:_moto.physicsBody bodyB:_cabeca.physicsBody anchor:CGPointMake(113, 519.5)];
-        
-        [self.physicsWorld addJoint:headJoint];
-        
-        
-        // Create the left wheel
-        self.leftWheelNode = [SKSpriteNode spriteNodeWithImageNamed:@"bolaL.png"];
-//        self.leftWheelNode.alpha = 0;
-        self.leftWheelNode.size = CGSizeMake(45, 45);
-        self.leftWheelNode.position = CGPointMake(self.moto.position.x-51, 457);
-        self.leftWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:22.5];
-        self.leftWheelNode.physicsBody.dynamic = YES;
-        [self addChild:self.leftWheelNode];
-        
-        // Create the right wheel
-        self.rightWheelNode = [SKSpriteNode spriteNodeWithImageNamed:@"bolaR.png"];
-//        self.rightWheelNode.alpha = 0;
-        self.rightWheelNode.size = CGSizeMake(45, 45);
-        self.rightWheelNode.position = CGPointMake(self.moto.position.x+51, 457);
-        self.rightWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:22.5];
-        self.rightWheelNode.physicsBody.dynamic = YES;
-        [self addChild:self.rightWheelNode];
-        
-        SKPhysicsJointFixed* leftPinJoint = [SKPhysicsJointFixed jointWithBodyA:self.moto.physicsBody bodyB:self.leftWheelNode.physicsBody anchor:CGPointMake(90, 483)];
-        SKPhysicsJointFixed* rightPinJoint = [SKPhysicsJointFixed jointWithBodyA:self.moto.physicsBody bodyB:self.rightWheelNode.physicsBody anchor:CGPointMake(150, 483)];
-        
-        [self.physicsWorld addJoint:leftPinJoint];
-        [self.physicsWorld addJoint:rightPinJoint];
-
-        
-        
-        self.chao = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithRed:0.8f green:0.68f blue:0.3f alpha:1.0f] size:CGSizeMake(self.size.width, 40)];
-        
-        [self.chao setPosition:CGPointMake(self.size.width/2, 290)];
-        self.chao.alpha = 0;
-        
-        self.chao.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.chao.size];
-        self.chao.physicsBody.dynamic = NO;
-        self.chao.physicsBody.density = 1.0f;
-        self.chao.physicsBody.restitution = 0;
-        self.chao.physicsBody.categoryBitMask = chaoCategory;
-        self.chao.physicsBody.contactTestBitMask = cabecaCategory;
-        
-        [self addChild:self.chao];
-        
-        
-        
-        SKSpriteNode* bola = [SKSpriteNode spriteNodeWithImageNamed:@"bola.png"];
-        [bola setSize:CGSizeMake(120, 120)];
-        [bola setPosition:CGPointMake(120-19, 350)];
-        
-        bola.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:bola.size.width / 2];
-        bola.physicsBody.dynamic = NO;
-        bola.physicsBody.density = 1.0f;
-        bola.physicsBody.restitution = 0;
-        
-//        [self addChild:bola];
+        [self createChao];
+        [self createBordas];
+      
 
     }
     return self;
+}
+
+-(void)testBodyWithImages{
+    _moto = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithRed:0.4f green:0.5f blue:0.7f alpha:1.0f] size:CGSizeMake(120, 35)];
+    _moto.position = CGPointMake(120, 500);
+    _moto.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(120, 35)];
+    _moto.physicsBody.dynamic = YES;
+    _moto.physicsBody.affectedByGravity = YES;
+    _moto.physicsBody.allowsRotation = YES;
+    _moto.physicsBody.density = 0.6f;
+    _moto.physicsBody.restitution = 0.3;
+
+    SKSpriteNode* imagemMoto = [SKSpriteNode spriteNodeWithImageNamed:@"moto1.png"];
+    [imagemMoto setSize:CGSizeMake(150, 133)];
+    [imagemMoto setPosition:CGPointMake(120, 500)];
+    [self addChild:imagemMoto];
+
+    [self addChild:self.moto];
+    
+    _transparencia = 1;
 }
 
 -(void)didBeginContact:(SKPhysicsContact *)contact{
@@ -163,7 +99,7 @@
     return;
 }
 
--(void)createFrameWithAtlas{
+-(void)createMoto{
     
     NSMutableArray *motoFrame = [NSMutableArray array];
     SKTextureAtlas *motoAnimationAtlas = [SKTextureAtlas atlasNamed:@"Moto"];
@@ -178,10 +114,80 @@
     
     SKTexture *temp = _motoFrames[0];
     _moto = [SKSpriteNode spriteNodeWithTexture:temp];
-//    _moto.size = CGSizeMake(150, 133);
-//    _moto.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+    _moto.size = CGSizeMake(150, 133);
+    _moto.position = CGPointMake(120, 500);
+    _moto.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(120, 35)];
+    _moto.physicsBody.dynamic = YES;
+    _moto.physicsBody.affectedByGravity = YES;
+    _moto.physicsBody.allowsRotation = YES;
+    _moto.physicsBody.density = 0.6f;
+    _moto.physicsBody.restitution = 0.3;
     [self addChild:_moto];
     [self motoFrames];
+}
+
+-(void)createRodas{
+    // Create the left wheel
+    _leftWheelNode = [SKSpriteNode spriteNodeWithImageNamed:@"bolaL.png"];
+    _leftWheelNode.alpha = _transparencia;
+    _leftWheelNode.size = CGSizeMake(45, 45);
+    _leftWheelNode.position = CGPointMake(_moto.position.x-51, 457);
+    _leftWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:22.5];
+    _leftWheelNode.physicsBody.dynamic = YES;
+    [self addChild:_leftWheelNode];
+    
+    // Create the right wheel
+    _rightWheelNode = [SKSpriteNode spriteNodeWithImageNamed:@"bolaR.png"];
+    _rightWheelNode.alpha = _transparencia;
+    _rightWheelNode.size = CGSizeMake(45, 45);
+    _rightWheelNode.position = CGPointMake(_moto.position.x+51, 457);
+    _rightWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:22.5];
+    _rightWheelNode.physicsBody.dynamic = YES;
+    [self addChild:_rightWheelNode];
+    
+    SKPhysicsJointFixed* leftPinJoint = [SKPhysicsJointFixed jointWithBodyA:_moto.physicsBody bodyB:_leftWheelNode.physicsBody anchor:CGPointMake(90, 483)];
+    SKPhysicsJointFixed* rightPinJoint = [SKPhysicsJointFixed jointWithBodyA:_moto.physicsBody bodyB:_rightWheelNode.physicsBody anchor:CGPointMake(150, 483)];
+    
+    [self.physicsWorld addJoint:leftPinJoint];
+    [self.physicsWorld addJoint:rightPinJoint];
+}
+
+-(void)createCabeca{
+    _cabeca = [SKSpriteNode spriteNodeWithColor:[UIColor redColor] size:CGSizeMake(28, 45)];
+    _cabeca.position = CGPointMake(113, 542);
+    _cabeca.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(28, 45)];
+    _cabeca.physicsBody.dynamic = YES;
+    _cabeca.alpha = _transparencia;
+    _cabeca.physicsBody.categoryBitMask = cabecaCategory;
+    _cabeca.physicsBody.contactTestBitMask = barrilCategory | chaoCategory;
+    _cabeca.physicsBody.usesPreciseCollisionDetection = YES;
+    
+    [self addChild:_cabeca];
+    
+    SKPhysicsJointFixed* headJoint = [SKPhysicsJointFixed jointWithBodyA:_moto.physicsBody bodyB:_cabeca.physicsBody anchor:CGPointMake(113, 519.5)];
+    
+    [self.physicsWorld addJoint:headJoint];
+}
+
+-(void)createChao{
+    _chao = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithRed:0.8f green:0.68f blue:0.3f alpha:1.0f] size:CGSizeMake(self.size.width, 40)];
+    
+    [_chao setPosition:CGPointMake(self.size.width/2, 290)];
+    _chao.alpha = 0;
+    
+    _chao.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:self.chao.size];
+    _chao.physicsBody.dynamic = NO;
+    _chao.physicsBody.density = 1.0f;
+    _chao.physicsBody.restitution = 0;
+    _chao.physicsBody.categoryBitMask = chaoCategory;
+    _chao.physicsBody.contactTestBitMask = cabecaCategory;
+    
+    [self addChild:_chao];
+}
+
+-(void)createBordas{
+    CGRect borderRect = CGRectMake(0, 0, self.size.width, self.size.height);
+    self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:borderRect];
 }
 
 -(void)walkingMoto

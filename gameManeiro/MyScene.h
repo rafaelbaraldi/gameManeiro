@@ -24,6 +24,8 @@ static const UInt32 chaoCategory = 0x1 << 2;
 @property SKSpriteNode* rightWheelNode;
 @property NSMutableArray* timeArray;
 
+@property int transparencia;
+
 @property NSArray *motoFrames;
 @property NSArray *backgroundFrames;
 
