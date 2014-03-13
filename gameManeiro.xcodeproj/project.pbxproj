@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B609C2D18D0D3FF00EDB671 /* bolaL.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B609C2C18D0D3FE00EDB671 /* bolaL.png */; };
+		1B609C2F18D0D40200EDB671 /* bolaR.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B609C2E18D0D40200EDB671 /* bolaR.png */; };
+		1B609C3118D0EF1400EDB671 /* Background.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 1B609C3018D0EF1400EDB671 /* Background.atlas */; };
+		1B609C3318D0EF1F00EDB671 /* Moto.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 1B609C3218D0EF1F00EDB671 /* Moto.atlas */; };
 		1BE1683C18CE3B39001E852D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE1683B18CE3B39001E852D /* Foundation.framework */; };
 		1BE1683E18CE3B39001E852D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE1683D18CE3B39001E852D /* CoreGraphics.framework */; };
 		1BE1684018CE3B39001E852D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE1683F18CE3B39001E852D /* UIKit.framework */; };
@@ -18,7 +22,6 @@
 		1BE1685418CE3B39001E852D /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1BE1685218CE3B39001E852D /* Main_iPad.storyboard */; };
 		1BE1685718CE3B39001E852D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE1685618CE3B39001E852D /* ViewController.m */; };
 		1BE1685A18CE3B39001E852D /* MyScene.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE1685918CE3B39001E852D /* MyScene.m */; };
-		1BE1685C18CE3B39001E852D /* Spaceship.png in Resources */ = {isa = PBXBuildFile; fileRef = 1BE1685B18CE3B39001E852D /* Spaceship.png */; };
 		1BE1685E18CE3B39001E852D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1BE1685D18CE3B39001E852D /* Images.xcassets */; };
 		1BE1686518CE3B39001E852D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE1686418CE3B39001E852D /* XCTest.framework */; };
 		1BE1686618CE3B39001E852D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BE1683B18CE3B39001E852D /* Foundation.framework */; };
@@ -26,6 +29,7 @@
 		1BE1686F18CE3B39001E852D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1BE1686D18CE3B39001E852D /* InfoPlist.strings */; };
 		1BE1687118CE3B39001E852D /* gameManeiroTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE1687018CE3B39001E852D /* gameManeiroTests.m */; };
 		1BE1687B18CE4274001E852D /* moto1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1BE1687A18CE4274001E852D /* moto1.png */; };
+		1BE564F018CF920C003004F7 /* bola.png in Resources */ = {isa = PBXBuildFile; fileRef = 1BE564EF18CF920C003004F7 /* bola.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +43,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1B609C2C18D0D3FE00EDB671 /* bolaL.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bolaL.png; sourceTree = "<group>"; };
+		1B609C2E18D0D40200EDB671 /* bolaR.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bolaR.png; sourceTree = "<group>"; };
+		1B609C3018D0EF1400EDB671 /* Background.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Background.atlas; sourceTree = "<group>"; };
+		1B609C3218D0EF1F00EDB671 /* Moto.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Moto.atlas; sourceTree = "<group>"; };
 		1BE1683818CE3B39001E852D /* gameManeiro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = gameManeiro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BE1683B18CE3B39001E852D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1BE1683D18CE3B39001E852D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -56,7 +64,6 @@
 		1BE1685618CE3B39001E852D /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		1BE1685818CE3B39001E852D /* MyScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyScene.h; sourceTree = "<group>"; };
 		1BE1685918CE3B39001E852D /* MyScene.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyScene.m; sourceTree = "<group>"; };
-		1BE1685B18CE3B39001E852D /* Spaceship.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Spaceship.png; sourceTree = "<group>"; };
 		1BE1685D18CE3B39001E852D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1BE1686318CE3B39001E852D /* gameManeiroTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = gameManeiroTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BE1686418CE3B39001E852D /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -64,6 +71,7 @@
 		1BE1686E18CE3B39001E852D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1BE1687018CE3B39001E852D /* gameManeiroTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = gameManeiroTests.m; sourceTree = "<group>"; };
 		1BE1687A18CE4274001E852D /* moto1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moto1.png; sourceTree = "<group>"; };
+		1BE564EF18CF920C003004F7 /* bola.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bola.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,8 +133,10 @@
 		1BE1684318CE3B39001E852D /* gameManeiro */ = {
 			isa = PBXGroup;
 			children = (
-				1BE1684C18CE3B39001E852D /* AppDelegate.h */,
+				1B609C3018D0EF1400EDB671 /* Background.atlas */,
+				1B609C3218D0EF1F00EDB671 /* Moto.atlas */,
 				1BE1684D18CE3B39001E852D /* AppDelegate.m */,
+				1BE1684C18CE3B39001E852D /* AppDelegate.h */,
 				1BE1684F18CE3B39001E852D /* Main_iPhone.storyboard */,
 				1BE1685218CE3B39001E852D /* Main_iPad.storyboard */,
 				1BE1687A18CE4274001E852D /* moto1.png */,
@@ -134,7 +144,9 @@
 				1BE1685618CE3B39001E852D /* ViewController.m */,
 				1BE1685818CE3B39001E852D /* MyScene.h */,
 				1BE1685918CE3B39001E852D /* MyScene.m */,
-				1BE1685B18CE3B39001E852D /* Spaceship.png */,
+				1B609C2E18D0D40200EDB671 /* bolaR.png */,
+				1B609C2C18D0D3FE00EDB671 /* bolaL.png */,
+				1BE564EF18CF920C003004F7 /* bola.png */,
 				1BE1685D18CE3B39001E852D /* Images.xcassets */,
 				1BE1684418CE3B39001E852D /* Supporting Files */,
 			);
@@ -217,6 +229,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "RAFAEL BARALDI";
 				TargetAttributes = {
+					1BE1683718CE3B39001E852D = {
+						DevelopmentTeam = AW2553KXBF;
+					};
 					1BE1686218CE3B39001E852D = {
 						TestTargetID = 1BE1683718CE3B39001E852D;
 					};
@@ -246,12 +261,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1BE1685C18CE3B39001E852D /* Spaceship.png in Resources */,
+				1B609C3318D0EF1F00EDB671 /* Moto.atlas in Resources */,
 				1BE1685E18CE3B39001E852D /* Images.xcassets in Resources */,
 				1BE1687B18CE4274001E852D /* moto1.png in Resources */,
 				1BE1685418CE3B39001E852D /* Main_iPad.storyboard in Resources */,
 				1BE1685118CE3B39001E852D /* Main_iPhone.storyboard in Resources */,
+				1B609C2F18D0D40200EDB671 /* bolaR.png in Resources */,
 				1BE1684818CE3B39001E852D /* InfoPlist.strings in Resources */,
+				1B609C2D18D0D3FF00EDB671 /* bolaL.png in Resources */,
+				1B609C3118D0EF1400EDB671 /* Background.atlas in Resources */,
+				1BE564F018CF920C003004F7 /* bola.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,10 +429,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "gameManeiro/gameManeiro-Prefix.pch";
 				INFOPLIST_FILE = "gameManeiro/gameManeiro-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -424,10 +446,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "gameManeiro/gameManeiro-Prefix.pch";
 				INFOPLIST_FILE = "gameManeiro/gameManeiro-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				SPRITEKIT_TEXTURE_ATLAS_OUTPUT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -494,6 +519,7 @@
 				1BE1687618CE3B39001E852D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1BE1687718CE3B39001E852D /* Build configuration list for PBXNativeTarget "gameManeiroTests" */ = {
 			isa = XCConfigurationList;
@@ -502,6 +528,7 @@
 				1BE1687918CE3B39001E852D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

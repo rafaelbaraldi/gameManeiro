@@ -11,5 +11,14 @@
 @interface MyScene : SKScene
 
 @property SKSpriteNode* moto;
+@property SKSpriteNode* cabeca;
+@property SKSpriteNode *background;
+@property SKSpriteNode* chao;
+@property SKSpriteNode* leftWheelNode;
+@property SKSpriteNode* rightWheelNode;
+@property NSMutableArray* timeArray;
+
+@property NSArray *motoFrames;
+@property NSArray *backgroundFrames;
 
 @end
