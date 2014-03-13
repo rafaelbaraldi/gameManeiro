@@ -29,5 +29,9 @@ static const UInt32 chaoCategory = 0x1 << 2;
 @property NSArray *motoFrames;
 @property NSArray *backgroundFrames;
 
+@property SKSpriteNode *cloud;
+@property SKSpriteNode *cloud2;
+
+@property BOOL firstTouch;
 
 @end

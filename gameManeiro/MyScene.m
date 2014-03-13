@@ -15,16 +15,14 @@
         /* Setup your scene here */
         
         _transparencia = 0;
+        _firstTouch = YES;
         
         _timeArray = [[NSMutableArray alloc]init];
         
         self.physicsWorld.contactDelegate = self;
         
-        [self createFrameWithAtlasBackground:@"Background" :@"background"];
-        [self movingBackground:@"MovingBike" :_backgroundFrames];
-        
-        [self createMoto];
-        [self walkingMoto];
+        [self criaFrameFundo];
+        [self criaMoto];
         
         //testa os corpos da moto ( precisa comentar dois os metodos de cima)
 //        [self testBodyWithImages];
@@ -66,14 +64,14 @@
     }
 }
 
--(void)createFrameWithAtlasBackground:(NSString*)pasta :(NSString*)imagem{
+-(void)criaFrameFundo{
     
     NSMutableArray *backgroundFrame = [NSMutableArray array];
-    SKTextureAtlas *bgAnimationAtlas = [SKTextureAtlas atlasNamed:pasta];
+    SKTextureAtlas *bgAnimationAtlas = [SKTextureAtlas atlasNamed:@"Background"];
     
     int numImages = bgAnimationAtlas.textureNames.count;
     for (int i = 1; i <= numImages / 2; i++) {
-        NSString *textureName = [NSString stringWithFormat:@"%@%d",imagem, i];
+        NSString *textureName = [NSString stringWithFormat:@"background%d", i];
         SKTexture *temp = [bgAnimationAtlas textureNamed:textureName];
         [backgroundFrame addObject:temp];
     }
@@ -86,20 +84,21 @@
     _background.position = CGPointMake(384, 512);
     [self addChild:_background];
     [self backgroundFrames];
+    
 }
 
--(void)movingBackground:(NSString*)key :(NSArray*)frames
+-(void)moverFundo
 {
-    //This is our general runAction method to make our bear walk.
     [_background runAction:[SKAction repeatActionForever:
-                            [SKAction animateWithTextures:frames
-                                             timePerFrame:0.15f
+                            [SKAction animateWithTextures:_backgroundFrames
+                                             timePerFrame:0.2f
                                                    resize:NO
-                                                  restore:YES]] withKey:key];
+                                                  restore:YES]] withKey:@"movendoFundo"];
     return;
 }
 
--(void)createMoto{
+
+-(void)criaMoto{
     
     NSMutableArray *motoFrame = [NSMutableArray array];
     SKTextureAtlas *motoAnimationAtlas = [SKTextureAtlas atlasNamed:@"Moto"];
@@ -117,11 +116,9 @@
     _moto.size = CGSizeMake(150, 133);
     _moto.position = CGPointMake(120, 500);
     _moto.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(120, 35)];
-    _moto.physicsBody.dynamic = YES;
+    _moto.physicsBody.dynamic = NO;
     _moto.physicsBody.affectedByGravity = YES;
     _moto.physicsBody.allowsRotation = YES;
-    _moto.physicsBody.density = 0.6f;
-    _moto.physicsBody.restitution = 0.3;
     [self addChild:_moto];
     [self motoFrames];
 }
@@ -134,6 +131,7 @@
     _leftWheelNode.position = CGPointMake(_moto.position.x-51, 457);
     _leftWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:22.5];
     _leftWheelNode.physicsBody.dynamic = YES;
+    _leftWheelNode.physicsBody.restitution = 0.5;
     [self addChild:_leftWheelNode];
     
     // Create the right wheel
@@ -143,6 +141,7 @@
     _rightWheelNode.position = CGPointMake(_moto.position.x+51, 457);
     _rightWheelNode.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:22.5];
     _rightWheelNode.physicsBody.dynamic = YES;
+    _rightWheelNode.physicsBody.restitution = 0.5;
     [self addChild:_rightWheelNode];
     
     SKPhysicsJointFixed* leftPinJoint = [SKPhysicsJointFixed jointWithBodyA:_moto.physicsBody bodyB:_leftWheelNode.physicsBody anchor:CGPointMake(90, 483)];
@@ -190,9 +189,8 @@
     self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:borderRect];
 }
 
--(void)walkingMoto
+-(void)moverMoto
 {
-    //This is our general runAction method to make our bear walk.
     [_moto runAction:[SKAction repeatActionForever:
                       [SKAction animateWithTextures:_motoFrames
                                        timePerFrame:0.1f
@@ -211,24 +209,61 @@
     [self.moto.physicsBody applyTorque:-5];
 }
 
+-(void)moverNuvens{
+    
+    _cloud = [SKSpriteNode spriteNodeWithImageNamed:@"cloud.png"];
+    _cloud.size = CGSizeMake(700, 377);
+    _cloud.position = CGPointMake(1100, 730);
+    [self addChild:_cloud];
+    
+    SKAction *moveToLeftCloud = [SKAction moveTo:CGPointMake(-210, _cloud.position.y) duration:8];
+    SKAction *moveToRightCloud = [SKAction moveTo:CGPointMake(1100, 730) duration:0];
+    
+    SKAction *sequenceCloud = [SKAction sequence:@[moveToLeftCloud, moveToRightCloud]];
+    [_cloud runAction:[SKAction repeatActionForever:sequenceCloud]];
+}
+
+-(void)moverNuvem2{
+    
+    _cloud2 = [SKSpriteNode spriteNodeWithImageNamed:@"cloud.png"];
+    _cloud2.size = CGSizeMake(700, 377);
+    _cloud2.position = CGPointMake(1100, 730);
+    [self addChild:_cloud2];
+    
+    SKAction *moveToLeftCloud2 = [SKAction moveTo:CGPointMake(-210, _cloud2.position.y) duration:8];
+    SKAction *moveToRightCloud2 = [SKAction moveTo:CGPointMake(1100, 730) duration:0];
+    
+    SKAction *sequenceCloud2 = [SKAction sequence:@[moveToLeftCloud2, moveToRightCloud2]];
+    [_cloud2 runAction:[SKAction repeatActionForever:sequenceCloud2]];
+}
+
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
     
-    
-    for (UITouch *touch in touches) {
-        CGPoint location = [touch locationInNode:self];
-    
+    if(_firstTouch){
+        _moto.physicsBody.dynamic = YES;
         
-        if(location.x > self.size.width/2){
-            [self mataTime];
-            NSTimer* empinaTime = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(empina) userInfo:nil repeats:YES];
-            [_timeArray addObject:empinaTime];        }
-        else{
-            [self mataTime];
-            NSTimer* empinaTime = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(desempina) userInfo:nil repeats:YES];
-            [_timeArray addObject:empinaTime];
+        [self moverMoto];
+        [self moverFundo];
+        [self moverNuvens];
+        [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(moverNuvem2) userInfo:nil repeats:NO];
+        
+        _firstTouch = NO;
+    }
+    else{
+        for (UITouch *touch in touches) {
+            CGPoint location = [touch locationInNode:self];
+        
+            if(location.x > self.size.width/2){
+                [self mataTime];
+                NSTimer* empinaTime = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(empina) userInfo:nil repeats:YES];
+                [_timeArray addObject:empinaTime];        }
+            else{
+                [self mataTime];
+                NSTimer* empinaTime = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(desempina) userInfo:nil repeats:YES];
+                [_timeArray addObject:empinaTime];
+            }
         }
-
     }
 }
 

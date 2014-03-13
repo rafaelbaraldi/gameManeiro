@@ -30,6 +30,7 @@
 		1BE1687118CE3B39001E852D /* gameManeiroTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE1687018CE3B39001E852D /* gameManeiroTests.m */; };
 		1BE1687B18CE4274001E852D /* moto1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1BE1687A18CE4274001E852D /* moto1.png */; };
 		1BE564F018CF920C003004F7 /* bola.png in Resources */ = {isa = PBXBuildFile; fileRef = 1BE564EF18CF920C003004F7 /* bola.png */; };
+		31BADF0018D23BA20003A545 /* cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = 31BADEFF18D23BA20003A545 /* cloud.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 		1BE1687018CE3B39001E852D /* gameManeiroTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = gameManeiroTests.m; sourceTree = "<group>"; };
 		1BE1687A18CE4274001E852D /* moto1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moto1.png; sourceTree = "<group>"; };
 		1BE564EF18CF920C003004F7 /* bola.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bola.png; sourceTree = "<group>"; };
+		31BADEFF18D23BA20003A545 /* cloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cloud.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 				1B609C2E18D0D40200EDB671 /* bolaR.png */,
 				1B609C2C18D0D3FE00EDB671 /* bolaL.png */,
 				1BE564EF18CF920C003004F7 /* bola.png */,
+				31BADEFF18D23BA20003A545 /* cloud.png */,
 				1BE1685D18CE3B39001E852D /* Images.xcassets */,
 				1BE1684418CE3B39001E852D /* Supporting Files */,
 			);
@@ -266,6 +269,7 @@
 				1BE1687B18CE4274001E852D /* moto1.png in Resources */,
 				1BE1685418CE3B39001E852D /* Main_iPad.storyboard in Resources */,
 				1BE1685118CE3B39001E852D /* Main_iPhone.storyboard in Resources */,
+				31BADF0018D23BA20003A545 /* cloud.png in Resources */,
 				1B609C2F18D0D40200EDB671 /* bolaR.png in Resources */,
 				1BE1684818CE3B39001E852D /* InfoPlist.strings in Resources */,
 				1B609C2D18D0D3FF00EDB671 /* bolaL.png in Resources */,
