@@ -38,6 +38,56 @@
     return self;
 }
 
+-(void)createBarril{
+    
+    _barrel = [SKSpriteNode spriteNodeWithImageNamed:@"barrel.png"];
+    _barrel.size = CGSizeMake(80, 56);
+    _barrel.position = CGPointMake(800, 327);
+    
+    _barrel.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:25];
+    _barrel.physicsBody.allowsRotation = NO;
+    _barrel.physicsBody.dynamic = YES;
+    _barrel.physicsBody.restitution = 0.5;
+    _barrel.physicsBody.categoryBitMask = barrilCategory;
+    _barrel.physicsBody.contactTestBitMask = cabecaCategory;
+    
+    self.barrelFrames = [self loadSpriteSheetFromImageWithName:@"barrel.png" withNumberOfSprites:4 withNumberOfRows:1 withNumberOfSpritesPerRow:4];
+    
+    SKAction *barrelAnim = [SKAction animateWithTextures:_barrelFrames timePerFrame:0.1f];
+    
+    SKAction *moveBarrelLeft = [SKAction moveTo:CGPointMake(-120, _barrel.position.y) duration:6];
+    SKAction *moveBarrelRight = [SKAction moveTo:CGPointMake(800, _barrel.position.y) duration:0];
+    
+    [_barrel runAction:[SKAction repeatActionForever:barrelAnim]];
+    [_barrel runAction:[SKAction repeatActionForever:[SKAction sequence:@[moveBarrelLeft, moveBarrelRight]]]];
+    
+    
+    [self addChild:_barrel];
+}
+
+-(NSMutableArray*)loadSpriteSheetFromImageWithName:(NSString*)name withNumberOfSprites:(int)numSprites withNumberOfRows:(int)numRows withNumberOfSpritesPerRow:(int)numSpritesPerRow {
+    NSMutableArray* animationSheet = [NSMutableArray array];
+    
+    SKTexture* mainTexture = [SKTexture textureWithImageNamed:name];
+    
+    for(int j = numRows-1; j >= 0; j--) {
+        for(int i = 0; i < numSpritesPerRow; i++) {
+            
+            SKTexture* part = [SKTexture textureWithRect:CGRectMake(i*(1.0f/numSpritesPerRow), j*(1.0f/numRows), 1.0f/numSpritesPerRow, 1.0f/numRows) inTexture:mainTexture];
+            
+            [animationSheet addObject:part];
+            
+            if(animationSheet.count == numSprites)
+                break;
+        }
+        
+        if(animationSheet.count == numSprites)
+            break;
+        
+    }
+    return animationSheet;
+}
+
 -(void)createPlayButton{
     _playNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
     _playNode.fontSize = 50;
@@ -78,6 +128,7 @@
         
         [_cloud removeAllActions];
         [_cloud2 removeAllActions];
+        [_barrel removeAllActions];
         
         [_cabeca removeFromParent];
         [_leftWheelNode removeFromParent];
@@ -86,6 +137,7 @@
         [_cloud removeFromParent];
         [_cloud2 removeFromParent];
         [_background removeFromParent];
+        [_barrel removeFromParent];
         
         _cabeca = nil;
         _leftWheelNode = nil;
@@ -94,6 +146,7 @@
         _cloud = nil;
         _cloud2 = nil;
         _background = nil;
+        _barrel = nil;
         
         [self criaFrameFundo];
         [self criaMoto];
@@ -231,7 +284,6 @@
     self.physicsBody.restitution = 0.6;
     self.physicsBody.categoryBitMask = bordaCategory;
     self.physicsBody.contactTestBitMask = cabecaCategory;
-    self.physicsBody.usesPreciseCollisionDetection = YES;
 }
 
 -(void)moverMoto
@@ -293,6 +345,7 @@
         [self moverMoto];
         [self moverFundo];
         [self moverNuvens];
+        [self createBarril];
         
         [_playNode removeFromParent];
         

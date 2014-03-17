@@ -24,12 +24,15 @@ static const UInt32 bordaCategory = 0x1 << 3;
 @property SKSpriteNode* chao;
 @property SKSpriteNode* leftWheelNode;
 @property SKSpriteNode* rightWheelNode;
+@property SKSpriteNode* barrel;
+
 @property NSMutableArray* timeArray;
 
 @property int transparencia;
 
 @property NSArray *motoFrames;
 @property NSArray *backgroundFrames;
+@property NSArray* barrelFrames;
 
 @property SKSpriteNode *cloud;
 @property SKSpriteNode *cloud2;
