@@ -68,8 +68,40 @@
 }
 
 -(void)didBeginContact:(SKPhysicsContact *)contact{
-    if(contact.bodyA.categoryBitMask == cabecaCategory || contact.bodyB.categoryBitMask == cabecaCategory){
-        NSLog(@"morreu");
+    if((contact.bodyA.categoryBitMask == cabecaCategory || contact.bodyB.categoryBitMask == cabecaCategory) && (contact.bodyA.categoryBitMask != bordaCategory && contact.bodyB.categoryBitMask != bordaCategory)){
+            NSLog(@"morreu");
+        
+        [self mataTime];
+        
+        [_tempoNuvem invalidate];
+        _tempoNuvem = nil;
+        
+        [_cloud removeAllActions];
+        [_cloud2 removeAllActions];
+        
+        [_cabeca removeFromParent];
+        [_leftWheelNode removeFromParent];
+        [_rightWheelNode removeFromParent];
+        [_moto removeFromParent];
+        [_cloud removeFromParent];
+        [_cloud2 removeFromParent];
+        [_background removeFromParent];
+        
+        _cabeca = nil;
+        _leftWheelNode = nil;
+        _rightWheelNode = nil;
+        _moto = nil;
+        _cloud = nil;
+        _cloud2 = nil;
+        _background = nil;
+        
+        [self criaFrameFundo];
+        [self criaMoto];
+        [self createRodas];
+        [self createCabeca];
+        [self createPlayButton];
+        
+        _firstTouch = YES;
     }
 }
 
@@ -196,6 +228,10 @@
 -(void)createBordas{
     CGRect borderRect = CGRectMake(0, 0, self.size.width, self.size.height);
     self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:borderRect];
+    self.physicsBody.restitution = 0.6;
+    self.physicsBody.categoryBitMask = bordaCategory;
+    self.physicsBody.contactTestBitMask = cabecaCategory;
+    self.physicsBody.usesPreciseCollisionDetection = YES;
 }
 
 -(void)moverMoto
@@ -210,12 +246,12 @@
 
 
 -(void)empina{
-    //[self.rightWheelNode.physicsBody applyImpulse:CGVectorMake(0, 20)];
-    [self.moto.physicsBody applyTorque:6];
+    //[_rightWheelNode.physicsBody applyImpulse:CGVectorMake(0, 20)];
+    [_moto.physicsBody applyTorque:6];
 }
 -(void)desempina{
-//    [self.rightWheelNode.physicsBody applyImpulse:CGVectorMake(0, -20)];
-    [self.moto.physicsBody applyTorque:-5];
+//    [_rightWheelNode.physicsBody applyImpulse:CGVectorMake(0, -20)];
+    [_moto.physicsBody applyTorque:-5];
 }
 
 -(void)moverNuvens{
@@ -230,6 +266,8 @@
     
     SKAction *sequenceCloud = [SKAction sequence:@[moveToLeftCloud, moveToRightCloud]];
     [_cloud runAction:[SKAction repeatActionForever:sequenceCloud]];
+    
+    _tempoNuvem = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(moverNuvem2) userInfo:nil repeats:NO];
 }
 
 -(void)moverNuvem2{
@@ -255,7 +293,6 @@
         [self moverMoto];
         [self moverFundo];
         [self moverNuvens];
-        [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(moverNuvem2) userInfo:nil repeats:NO];
         
         [_playNode removeFromParent];
         

@@ -14,6 +14,8 @@ static const UInt32 barrilCategory = 0x1 << 1;
 
 static const UInt32 chaoCategory = 0x1 << 2;
 
+static const UInt32 bordaCategory = 0x1 << 3;
+
 @interface MyScene : SKScene <SKPhysicsContactDelegate>
 
 @property SKSpriteNode* moto;
@@ -35,5 +37,7 @@ static const UInt32 chaoCategory = 0x1 << 2;
 @property SKLabelNode* playNode;
 
 @property BOOL firstTouch;
+
+@property NSTimer* tempoNuvem;
 
 @end
