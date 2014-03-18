@@ -14,6 +14,26 @@
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         
+        _metros = 0;
+        _prefs = [NSUserDefaults standardUserDefaults];
+        
+
+        NSInteger* record = (NSInteger*)[_prefs integerForKey:@"recorde"];
+        if(record != nil){
+            _recorde = (long)record;
+        }
+        else{
+            _recorde = 0;
+        }
+        
+        NSInteger* last = (NSInteger*)[_prefs integerForKey:@"anterior"];
+        if(record != nil){
+            _anterior = (long)last;
+        }
+        else{
+            _anterior = 0;
+        }
+        
         _transparencia = 0;
         _firstTouch = YES;
         
@@ -24,7 +44,7 @@
         [self criaFrameFundo];
         [self criaMoto];
         
-        //testa os corpos da moto ( precisa comentar dois os metodos de cima)
+//        //testa os corpos da moto ( precisa comentar dois os metodos de cima)
 //        [self testBodyWithImages];
         
         [self createRodas];
@@ -36,6 +56,31 @@
         [self createPlayButton];
     }
     return self;
+}
+
+-(void)criaPontos{
+    _metros = 0;
+    
+    _pontosNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+    _pontosNode.fontSize = 30;
+    _pontosNode.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame) + 200);
+    _pontosNode.fontColor = [UIColor grayColor];
+    _pontosNode.text = [NSString stringWithFormat:@"Distancia: %ld metros", _metros];
+    [self addChild:_pontosNode];
+    
+    _recordeNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+    _recordeNode.fontSize = 11;
+    _recordeNode.position = CGPointMake(CGRectGetMidX(self.frame) - 320, CGRectGetMidY(self.frame) + 260);
+    _recordeNode.fontColor = [UIColor grayColor];
+    _recordeNode.text = [NSString stringWithFormat:@"Recorde: %ld metros", _recorde];
+    [self addChild:_recordeNode];
+    
+    _anteriorNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+    _anteriorNode.fontSize = 11;
+    _anteriorNode.position = CGPointMake(CGRectGetMidX(self.frame) - 320, CGRectGetMidY(self.frame) + 245);
+    _anteriorNode.fontColor = [UIColor grayColor];
+    _anteriorNode.text = [NSString stringWithFormat:@"Ultimo: %ld metros", _anterior];
+    [self addChild:_anteriorNode];
 }
 
 -(void)createBarril{
@@ -121,6 +166,18 @@
     if((contact.bodyA.categoryBitMask == cabecaCategory || contact.bodyB.categoryBitMask == cabecaCategory) && (contact.bodyA.categoryBitMask != bordaCategory && contact.bodyB.categoryBitMask != bordaCategory)){
             NSLog(@"morreu");
         
+        _anterior = _metros;
+        if(_metros > _recorde){
+            _recorde = _metros;
+        }
+        [_prefs setInteger:_recorde forKey:@"recorde"];
+        [_prefs setInteger:_anterior forKey:@"anterior"];
+        [_prefs synchronize];
+        
+        
+        [_tempoPontos invalidate];
+        _tempoPontos = nil;
+        
         [self mataTime];
         
         [_tempoNuvem invalidate];
@@ -138,6 +195,9 @@
         [_cloud2 removeFromParent];
         [_background removeFromParent];
         [_barrel removeFromParent];
+        [_pontosNode removeFromParent];
+        [_recordeNode removeFromParent];
+        [_anteriorNode removeFromParent];
         
         _cabeca = nil;
         _leftWheelNode = nil;
@@ -147,6 +207,9 @@
         _cloud2 = nil;
         _background = nil;
         _barrel = nil;
+        _pontosNode = nil;
+        _recordeNode = nil;
+        _anteriorNode = nil;
         
         [self criaFrameFundo];
         [self criaMoto];
@@ -336,6 +399,11 @@
     [_cloud2 runAction:[SKAction repeatActionForever:sequenceCloud2]];
 }
 
+-(void)incrementaMetros{
+    _metros += 1.7361111125;
+    _pontosNode.text = [NSString stringWithFormat:@"Distancia: %ld metros", _metros];
+}
+
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     /* Called when a touch begins */
     
@@ -348,6 +416,10 @@
         [self createBarril];
         
         [_playNode removeFromParent];
+        
+        [self criaPontos];
+        
+        _tempoPontos = [NSTimer scheduledTimerWithTimeInterval:0.125 target:self selector:@selector(incrementaMetros) userInfo:nil repeats:YES];
         
         _firstTouch = NO;
     }

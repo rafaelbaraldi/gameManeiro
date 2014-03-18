@@ -18,6 +18,10 @@ static const UInt32 bordaCategory = 0x1 << 3;
 
 @interface MyScene : SKScene <SKPhysicsContactDelegate>
 
+@property long metros;
+@property long recorde;
+@property long anterior;
+
 @property SKSpriteNode* moto;
 @property SKSpriteNode* cabeca;
 @property SKSpriteNode *background;
@@ -38,9 +42,15 @@ static const UInt32 bordaCategory = 0x1 << 3;
 @property SKSpriteNode *cloud2;
 
 @property SKLabelNode* playNode;
+@property SKLabelNode* pontosNode;
+@property SKLabelNode* recordeNode;
+@property SKLabelNode* anteriorNode;
 
 @property BOOL firstTouch;
 
 @property NSTimer* tempoNuvem;
+@property NSTimer* tempoPontos;
+
+@property NSUserDefaults* prefs;
 
 @end
