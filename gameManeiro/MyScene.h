@@ -28,9 +28,12 @@ static const UInt32 bordaCategory = 0x1 << 3;
 @property SKSpriteNode* chao;
 @property SKSpriteNode* leftWheelNode;
 @property SKSpriteNode* rightWheelNode;
-@property SKSpriteNode* barrel;
+//@property SKSpriteNode* barrel;
 
 @property NSMutableArray* timeArray;
+
+@property NSMutableArray* listaObstaculos;
+@property NSTimer* tempoObstaculos;
 
 @property int transparencia;
 

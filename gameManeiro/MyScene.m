@@ -16,7 +16,6 @@
         
         _metros = 0;
         _prefs = [NSUserDefaults standardUserDefaults];
-        
 
         NSInteger* record = (NSInteger*)[_prefs integerForKey:@"recorde"];
         if(record != nil){
@@ -38,6 +37,7 @@
         _firstTouch = YES;
         
         _timeArray = [[NSMutableArray alloc]init];
+        _listaObstaculos = [[NSMutableArray alloc]init];
         
         self.physicsWorld.contactDelegate = self;
         
@@ -70,44 +70,46 @@
     
     _recordeNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
     _recordeNode.fontSize = 11;
-    _recordeNode.position = CGPointMake(CGRectGetMidX(self.frame) - 320, CGRectGetMidY(self.frame) + 260);
+    _recordeNode.position = CGPointMake(CGRectGetMidX(self.frame) - 315, CGRectGetMidY(self.frame) + 260);
     _recordeNode.fontColor = [UIColor grayColor];
     _recordeNode.text = [NSString stringWithFormat:@"Recorde: %ld metros", _recorde];
     [self addChild:_recordeNode];
     
     _anteriorNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
     _anteriorNode.fontSize = 11;
-    _anteriorNode.position = CGPointMake(CGRectGetMidX(self.frame) - 320, CGRectGetMidY(self.frame) + 245);
+    _anteriorNode.position = CGPointMake(CGRectGetMidX(self.frame) - 315, CGRectGetMidY(self.frame) + 245);
     _anteriorNode.fontColor = [UIColor grayColor];
     _anteriorNode.text = [NSString stringWithFormat:@"Ultimo: %ld metros", _anterior];
     [self addChild:_anteriorNode];
 }
 
 -(void)createBarril{
+    SKSpriteNode* barrel;
+    barrel = [SKSpriteNode spriteNodeWithImageNamed:@"barrel.png"];
+    barrel.size = CGSizeMake(80, 56);
+    barrel.position = CGPointMake(800, 327);
     
-    _barrel = [SKSpriteNode spriteNodeWithImageNamed:@"barrel.png"];
-    _barrel.size = CGSizeMake(80, 56);
-    _barrel.position = CGPointMake(800, 327);
-    
-    _barrel.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:25];
-    _barrel.physicsBody.allowsRotation = NO;
-    _barrel.physicsBody.dynamic = YES;
-    _barrel.physicsBody.restitution = 0.5;
-    _barrel.physicsBody.categoryBitMask = barrilCategory;
-    _barrel.physicsBody.contactTestBitMask = cabecaCategory;
+    barrel.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:25];
+    barrel.physicsBody.allowsRotation = NO;
+    barrel.physicsBody.dynamic = YES;
+    barrel.physicsBody.restitution = 0.5;
+    barrel.physicsBody.categoryBitMask = barrilCategory;
+    barrel.physicsBody.contactTestBitMask = cabecaCategory;
     
     self.barrelFrames = [self loadSpriteSheetFromImageWithName:@"barrel.png" withNumberOfSprites:4 withNumberOfRows:1 withNumberOfSpritesPerRow:4];
     
     SKAction *barrelAnim = [SKAction animateWithTextures:_barrelFrames timePerFrame:0.1f];
+    SKAction *moveBarrelLeft = [SKAction moveTo:CGPointMake(-120, barrel.position.y) duration:6];
+//    SKAction *moveBarrelRight = [SKAction moveTo:CGPointMake(800, _barrel.position.y) duration:0];
+    SKAction *killBarrel = [SKAction removeFromParent];
     
-    SKAction *moveBarrelLeft = [SKAction moveTo:CGPointMake(-120, _barrel.position.y) duration:6];
-    SKAction *moveBarrelRight = [SKAction moveTo:CGPointMake(800, _barrel.position.y) duration:0];
-    
-    [_barrel runAction:[SKAction repeatActionForever:barrelAnim]];
-    [_barrel runAction:[SKAction repeatActionForever:[SKAction sequence:@[moveBarrelLeft, moveBarrelRight]]]];
+    [barrel runAction:[SKAction repeatActionForever:barrelAnim]];
+    [barrel runAction:[SKAction repeatActionForever:[SKAction sequence:@[moveBarrelLeft, killBarrel]]]];
     
     
-    [self addChild:_barrel];
+    [self addChild:barrel];
+    
+    [_listaObstaculos addObject:barrel];
 }
 
 -(NSMutableArray*)loadSpriteSheetFromImageWithName:(NSString*)name withNumberOfSprites:(int)numSprites withNumberOfRows:(int)numRows withNumberOfSpritesPerRow:(int)numSpritesPerRow {
@@ -162,6 +164,13 @@
     _transparencia = 1;
 }
 
+-(void)removeObstaculos{
+    for (SKSpriteNode* no in _listaObstaculos) {
+        [no removeAllActions];
+        [no removeFromParent];
+    }
+}
+
 -(void)didBeginContact:(SKPhysicsContact *)contact{
     if((contact.bodyA.categoryBitMask == cabecaCategory || contact.bodyB.categoryBitMask == cabecaCategory) && (contact.bodyA.categoryBitMask != bordaCategory && contact.bodyB.categoryBitMask != bordaCategory)){
             NSLog(@"morreu");
@@ -175,6 +184,10 @@
         [_prefs synchronize];
         
         
+        [_tempoObstaculos invalidate];
+        _tempoObstaculos = nil;
+        
+        
         [_tempoPontos invalidate];
         _tempoPontos = nil;
         
@@ -185,7 +198,7 @@
         
         [_cloud removeAllActions];
         [_cloud2 removeAllActions];
-        [_barrel removeAllActions];
+//        [_barrel removeAllActions];
         
         [_cabeca removeFromParent];
         [_leftWheelNode removeFromParent];
@@ -194,10 +207,12 @@
         [_cloud removeFromParent];
         [_cloud2 removeFromParent];
         [_background removeFromParent];
-        [_barrel removeFromParent];
+//        [_barrel removeFromParent];
         [_pontosNode removeFromParent];
         [_recordeNode removeFromParent];
         [_anteriorNode removeFromParent];
+        
+        [self removeObstaculos];
         
         _cabeca = nil;
         _leftWheelNode = nil;
@@ -206,10 +221,12 @@
         _cloud = nil;
         _cloud2 = nil;
         _background = nil;
-        _barrel = nil;
+//        _barrel = nil;
         _pontosNode = nil;
         _recordeNode = nil;
         _anteriorNode = nil;
+        
+        [_listaObstaculos removeAllObjects];
         
         [self criaFrameFundo];
         [self criaMoto];
@@ -413,7 +430,9 @@
         [self moverMoto];
         [self moverFundo];
         [self moverNuvens];
-        [self createBarril];
+//        [self createBarril];
+        
+        _tempoObstaculos = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(createBarril) userInfo:nil repeats:YES];
         
         [_playNode removeFromParent];
         
