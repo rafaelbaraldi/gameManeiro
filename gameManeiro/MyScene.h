@@ -39,7 +39,8 @@ static const UInt32 bordaCategory = 0x1 << 3;
 
 @property NSArray *motoFrames;
 @property NSArray *backgroundFrames;
-@property NSArray* barrelFrames;
+@property NSArray *barrelFrames;
+@property NSArray *pedraFrames;
 
 @property SKSpriteNode *cloud;
 @property SKSpriteNode *cloud2;

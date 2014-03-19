@@ -83,33 +83,152 @@
     [self addChild:_anteriorNode];
 }
 
+-(void)createObstaculos{
+    int num = arc4random()%100;
+    num++;
+    
+    if(num >= 1 && num <= 45){
+        [self createBarril];
+    }
+    if(num >= 46 && num <= 75){
+        [self createPedra];
+    }
+    if(num >= 76 && num <= 85){
+        [self createBarrilTriplo];
+    }
+}
+
+-(void)createBarrilTriplo{
+    
+    //Cria Barril
+    SKSpriteNode* barrelUP;
+    barrelUP = [SKSpriteNode spriteNodeWithImageNamed:@"barrel.png"];
+    barrelUP.size = CGSizeMake(80, 56);
+    barrelUP.position = CGPointMake(840, 355);
+    
+    //Cria corpo fisico do Barril
+    barrelUP.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:25];
+    barrelUP.physicsBody.allowsRotation = NO;
+    barrelUP.physicsBody.dynamic = NO;
+    barrelUP.physicsBody.restitution = 0.5;
+    barrelUP.physicsBody.categoryBitMask = barrilCategory;
+    barrelUP.physicsBody.contactTestBitMask = cabecaCategory;
+    
+    //Cria Barril
+    SKSpriteNode* barrelLEFT;
+    barrelLEFT = [SKSpriteNode spriteNodeWithImageNamed:@"barrel.png"];
+    barrelLEFT.size = CGSizeMake(80, 56);
+    barrelLEFT.position = CGPointMake(800, 327);
+    
+    //Cria corpo fisico do Barril
+    barrelLEFT.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:25];
+    barrelLEFT.physicsBody.allowsRotation = NO;
+    barrelLEFT.physicsBody.dynamic = NO;
+    barrelLEFT.physicsBody.restitution = 0.5;
+    barrelLEFT.physicsBody.categoryBitMask = barrilCategory;
+    barrelLEFT.physicsBody.contactTestBitMask = cabecaCategory;
+    
+    //Cria Barril
+    SKSpriteNode* barrelRIGHT;
+    barrelRIGHT = [SKSpriteNode spriteNodeWithImageNamed:@"barrel.png"];
+    barrelRIGHT.size = CGSizeMake(80, 56);
+    barrelRIGHT.position = CGPointMake(880, 327);
+    
+    //Cria corpo fisico do Barril
+    barrelRIGHT.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:25];
+    barrelRIGHT.physicsBody.allowsRotation = NO;
+    barrelRIGHT.physicsBody.dynamic = NO;
+    barrelRIGHT.physicsBody.restitution = 0.5;
+    barrelRIGHT.physicsBody.categoryBitMask = barrilCategory;
+    barrelRIGHT.physicsBody.contactTestBitMask = cabecaCategory;
+    
+    //Add frames - SPRITE
+    _barrelFrames = [self loadSpriteSheetFromImageWithName:@"barrel.png" withNumberOfSprites:4 withNumberOfRows:1 withNumberOfSpritesPerRow:4];
+
+    
+    //Cria as animacoes
+    SKAction *barrelAnim = [SKAction animateWithTextures:_barrelFrames timePerFrame:0.1f];
+    SKAction *moveBarrelLeft = [SKAction moveTo:CGPointMake(-120, barrelLEFT.position.y) duration:6];
+    SKAction *moveBarrelRight = [SKAction moveTo:CGPointMake(-40, barrelRIGHT.position.y) duration:6];
+    SKAction *moveBarrelUp = [SKAction moveTo:CGPointMake(-80, barrelUP.position.y) duration:6];
+    SKAction *killBarrel = [SKAction removeFromParent];
+    
+    [barrelLEFT runAction:[SKAction repeatActionForever:barrelAnim]];
+    [barrelRIGHT runAction:[SKAction repeatActionForever:barrelAnim]];
+    [barrelUP runAction:[SKAction repeatActionForever:barrelAnim]];
+    
+    [barrelLEFT runAction:[SKAction repeatActionForever:[SKAction sequence:@[moveBarrelLeft, killBarrel]]]];
+    [barrelRIGHT runAction:[SKAction repeatActionForever:[SKAction sequence:@[moveBarrelRight, killBarrel]]]];
+    [barrelUP runAction:[SKAction repeatActionForever:[SKAction sequence:@[moveBarrelUp, killBarrel]]]];
+    
+    [self addChild:barrelRIGHT];
+    [self addChild:barrelUP];
+    [self addChild:barrelLEFT];
+    
+    [_listaObstaculos addObject:barrelLEFT];
+    [_listaObstaculos addObject:barrelRIGHT];
+    [_listaObstaculos addObject:barrelUP];
+}
+
 -(void)createBarril{
+    
+    //Cria Barril
     SKSpriteNode* barrel;
     barrel = [SKSpriteNode spriteNodeWithImageNamed:@"barrel.png"];
     barrel.size = CGSizeMake(80, 56);
     barrel.position = CGPointMake(800, 327);
     
+    //Cria corpo fisico do Barril
     barrel.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:25];
     barrel.physicsBody.allowsRotation = NO;
-    barrel.physicsBody.dynamic = YES;
+    barrel.physicsBody.dynamic = NO;
     barrel.physicsBody.restitution = 0.5;
     barrel.physicsBody.categoryBitMask = barrilCategory;
     barrel.physicsBody.contactTestBitMask = cabecaCategory;
     
+    //Add frames - SPRITE
     self.barrelFrames = [self loadSpriteSheetFromImageWithName:@"barrel.png" withNumberOfSprites:4 withNumberOfRows:1 withNumberOfSpritesPerRow:4];
     
+    //Cria as animacoes
     SKAction *barrelAnim = [SKAction animateWithTextures:_barrelFrames timePerFrame:0.1f];
     SKAction *moveBarrelLeft = [SKAction moveTo:CGPointMake(-120, barrel.position.y) duration:6];
-//    SKAction *moveBarrelRight = [SKAction moveTo:CGPointMake(800, _barrel.position.y) duration:0];
     SKAction *killBarrel = [SKAction removeFromParent];
     
     [barrel runAction:[SKAction repeatActionForever:barrelAnim]];
     [barrel runAction:[SKAction repeatActionForever:[SKAction sequence:@[moveBarrelLeft, killBarrel]]]];
     
-    
     [self addChild:barrel];
     
     [_listaObstaculos addObject:barrel];
+}
+
+-(void)createPedra{
+    
+    SKSpriteNode *pedra;
+    pedra = [SKSpriteNode spriteNodeWithImageNamed:@"stone.png"];
+    pedra.size = CGSizeMake(30, 30);
+    pedra.position = CGPointMake(800, 327);
+    
+    pedra.physicsBody = [SKPhysicsBody bodyWithCircleOfRadius:15];
+    pedra.physicsBody.allowsRotation = NO;
+    pedra.physicsBody.dynamic = NO;
+    pedra.physicsBody.restitution = 0.5;
+    pedra.physicsBody.density = 3;
+    pedra.physicsBody.categoryBitMask = barrilCategory;
+    pedra.physicsBody.contactTestBitMask = cabecaCategory;
+    
+    _pedraFrames = [self loadSpriteSheetFromImageWithName:@"stone.png" withNumberOfSprites:8 withNumberOfRows:1 withNumberOfSpritesPerRow:8];
+    
+    SKAction *pedraAnim = [SKAction animateWithTextures:_pedraFrames timePerFrame:0.3f];
+    SKAction *moveBarrelLeft = [SKAction moveTo:CGPointMake(-120, pedra.position.y) duration:6];
+    SKAction *killBarrel = [SKAction removeFromParent];
+    
+    [pedra runAction:[SKAction repeatActionForever:pedraAnim]];
+    [pedra runAction:[SKAction repeatActionForever:[SKAction sequence:@[moveBarrelLeft, killBarrel]]]];
+    
+    [self addChild:pedra];
+    
+    [_listaObstaculos addObject:pedra];
 }
 
 -(NSMutableArray*)loadSpriteSheetFromImageWithName:(NSString*)name withNumberOfSprites:(int)numSprites withNumberOfRows:(int)numRows withNumberOfSpritesPerRow:(int)numSpritesPerRow {
@@ -379,11 +498,11 @@
 
 -(void)empina{
     //[_rightWheelNode.physicsBody applyImpulse:CGVectorMake(0, 20)];
-    [_moto.physicsBody applyTorque:6];
+    [_moto.physicsBody applyTorque:12];
 }
 -(void)desempina{
 //    [_rightWheelNode.physicsBody applyImpulse:CGVectorMake(0, -20)];
-    [_moto.physicsBody applyTorque:-5];
+    [_moto.physicsBody applyTorque:-10];
 }
 
 -(void)moverNuvens{
@@ -430,9 +549,8 @@
         [self moverMoto];
         [self moverFundo];
         [self moverNuvens];
-//        [self createBarril];
         
-        _tempoObstaculos = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(createBarril) userInfo:nil repeats:YES];
+        _tempoObstaculos = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(createObstaculos) userInfo:nil repeats:YES];
         
         [_playNode removeFromParent];
         
