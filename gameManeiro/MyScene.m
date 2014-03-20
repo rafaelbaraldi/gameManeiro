@@ -16,22 +16,6 @@
         
         _metros = 0;
         _prefs = [NSUserDefaults standardUserDefaults];
-
-        NSInteger* record = (NSInteger*)[_prefs integerForKey:@"recorde"];
-        if(record != nil){
-            _recorde = (long)record;
-        }
-        else{
-            _recorde = 0;
-        }
-        
-        NSInteger* last = (NSInteger*)[_prefs integerForKey:@"anterior"];
-        if(record != nil){
-            _anterior = (long)last;
-        }
-        else{
-            _anterior = 0;
-        }
         
         _transparencia = 0;
         _firstTouch = YES;
@@ -40,24 +24,226 @@
         _listaObstaculos = [[NSMutableArray alloc]init];
         
         self.physicsWorld.contactDelegate = self;
+
+        //Recorde
+        NSInteger* record = (NSInteger*)[_prefs integerForKey:@"recorde"];
+        if(record != nil){
+            _recorde = (long)record;
+        }
+        else{
+            _recorde = 0;
+        }
         
+        //Ultima Pontuacao
+        NSInteger* last = (NSInteger*)[_prefs integerForKey:@"anterior"];
+        if(record != nil){
+            _anterior = (long)last;
+        }
+        else{
+            _anterior = 0;
+        }
+
+        //Frames Fundo
         [self criaFrameFundo];
+        
+        //Frames Moto
         [self criaMoto];
         
-//        //testa os corpos da moto ( precisa comentar dois os metodos de cima)
-//        [self testBodyWithImages];
-        
+        //Rodas
         [self createRodas];
+        
+        //Cabeca
         [self createCabeca];
         
+        //Chao
         [self createChao];
+        
+        //Paredes
         [self createBordas];
       
+        //Play Game
         [self createPlayButton];
+        
+        
+        //Botao Pause
+        [self createPauseButton];
     }
     return self;
 }
 
+-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    /* Called when a touch begins */
+    
+    if(_firstTouch){
+        _moto.physicsBody.dynamic = YES;
+        
+        [self createSound];
+        
+        [self moverMoto];
+        [self moverFundo];
+        [self moverNuvens];
+        
+        _tempoObstaculos = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(createObstaculos) userInfo:nil repeats:YES];
+        
+        [_playNode removeFromParent];
+        
+        [self criaPontos];
+        
+        _tempoPontos = [NSTimer scheduledTimerWithTimeInterval:0.125 target:self selector:@selector(incrementaMetros) userInfo:nil repeats:YES];
+        
+        _firstTouch = NO;
+    }
+    else{
+        for (UITouch *touch in touches) {
+            CGPoint location = [touch locationInNode:self];
+            
+            if(location.x > 717 && location.x < 743 && location.y > 737 && location.y < 763){
+                [self playGame];
+            }
+            else{
+                if(location.x > self.size.width/2){
+                    [self mataTime];
+                    
+                    SKAction *sound = [SKAction playSoundFileNamed:@"vrum.wav" waitForCompletion:YES];
+                    [self.scene runAction:sound];
+                    
+                    NSTimer* empinaTime = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(empina) userInfo:nil repeats:YES];
+                    [_timeArray addObject:empinaTime];
+                }
+                else{
+                    [self mataTime];
+                    NSTimer* empinaTime = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(desempina) userInfo:nil repeats:YES];
+                    [_timeArray addObject:empinaTime];
+                }
+            }
+        }
+    }
+}
+
+-(void)didBeginContact:(SKPhysicsContact *)contact{
+    if((contact.bodyA.categoryBitMask == cabecaCategory || contact.bodyB.categoryBitMask == cabecaCategory) && (contact.bodyA.categoryBitMask != bordaCategory && contact.bodyB.categoryBitMask != bordaCategory)){
+        NSLog(@"morreu");
+        
+        _anterior = _metros;
+        if(_metros > _recorde){
+            _recorde = _metros;
+        }
+        
+        [_prefs setInteger:_recorde forKey:@"recorde"];
+        [_prefs setInteger:_anterior forKey:@"anterior"];
+        [_prefs synchronize];
+        
+        [_tempoObstaculos invalidate];
+        _tempoObstaculos = nil;
+        
+        [_tempoPontos invalidate];
+        _tempoPontos = nil;
+        
+        [self mataTime];
+        
+        [_tempoNuvem invalidate];
+        _tempoNuvem = nil;
+        
+        [_cloud removeAllActions];
+        [_cloud2 removeAllActions];
+        [self.scene removeAllActions];
+        
+        [_cabeca removeFromParent];
+        [_leftWheelNode removeFromParent];
+        [_rightWheelNode removeFromParent];
+        [_moto removeFromParent];
+        [_cloud removeFromParent];
+        [_cloud2 removeFromParent];
+        [_background removeFromParent];
+        
+        [_pontosNode removeFromParent];
+        [_recordeNode removeFromParent];
+        [_anteriorNode removeFromParent];
+        
+        [self removeObstaculos];
+        
+        _cabeca = nil;
+        _leftWheelNode = nil;
+        _rightWheelNode = nil;
+        _moto = nil;
+        _cloud = nil;
+        _cloud2 = nil;
+        _background = nil;
+        
+        _pontosNode = nil;
+        _recordeNode = nil;
+        _anteriorNode = nil;
+        
+        [_listaObstaculos removeAllObjects];
+        
+        [self criaFrameFundo];
+        [self criaMoto];
+        [self createRodas];
+        [self createCabeca];
+        [self createPlayButton];
+        
+        _firstTouch = YES;
+    }
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    [self mataTime];
+}
+
+-(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event{
+    [self mataTime];
+}
+
+-(void)update:(CFTimeInterval)currentTime {
+    /* Called before each frame is rendered */
+}
+
+//Exibi Botao de START
+-(void)createPlayButton{
+    
+    _playNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+    _playNode.fontSize = 50;
+    _playNode.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+    _playNode.fontColor = [UIColor redColor];
+    _playNode.text = @"PLAY";
+    [self addChild:_playNode];
+}
+
+//Exibi Botao de PAUSE/PLAY
+-(void)createPauseButton{
+    
+    SKSpriteNode *pauseButton;
+    pauseButton = [SKSpriteNode spriteNodeWithImageNamed:@"playPause.png"];
+    pauseButton.size = CGSizeMake(25, 25);
+    pauseButton.position = CGPointMake(730, 750);
+    pauseButton.alpha = 0.5;
+    pauseButton.zPosition = 99;
+    
+    [self addChild:pauseButton];
+}
+
+//Comeca o Jogo
+-(void)playGame{
+    
+    if([self.scene isPaused]){
+        [self.scene setPaused:NO];
+        
+        _tempoPontos = [NSTimer scheduledTimerWithTimeInterval:0.125 target:self selector:@selector(incrementaMetros) userInfo:nil repeats:YES];
+    }
+    else{
+        
+        [_tempoPontos invalidate];
+        _tempoPontos = nil;
+        
+        [self.scene setPaused:YES];
+    }
+}
+
+/************
+ Pontuacao
+ ***********/
+
+//Exibi potuacao do jogo
 -(void)criaPontos{
     _metros = 0;
     
@@ -83,6 +269,33 @@
     [self addChild:_anteriorNode];
 }
 
+//Calcula Pontuacao
+-(void)incrementaMetros{
+    _metros += 1.7361111125;
+    _pontosNode.text = [NSString stringWithFormat:@"Distancia: %ld metros", _metros];
+}
+
+//Som - Liga a moto e fundo
+-(void)createSound{
+    
+    SKAction *playMoto = [SKAction playSoundFileNamed:@"play.wav" waitForCompletion:YES];
+    SKAction *tororoMoto = [SKAction playSoundFileNamed:@"tororororo.wav" waitForCompletion:YES];
+    
+    [self.scene runAction:[SKAction sequence:@[playMoto, [SKAction repeatActionForever:tororoMoto]]]];
+}
+
+//Mata NSTimer Movimentacao Moto
+-(void)mataTime{
+    for (NSTimer* tempo in _timeArray) {
+        [tempo invalidate];
+        [_timeArray removeObject:tempo];
+    }
+}
+
+/************
+ Obstaculos
+ ***********/
+//Chama os obstaculos aleatoriamente
 -(void)createObstaculos{
     int num = arc4random()%100;
     num++;
@@ -98,6 +311,15 @@
     }
 }
 
+//Deleta os obstaculos ao perder o jogo
+-(void)removeObstaculos{
+    for (SKSpriteNode* no in _listaObstaculos) {
+        [no removeAllActions];
+        [no removeFromParent];
+    }
+}
+
+//Barril Triplo
 -(void)createBarrilTriplo{
     
     //Cria Barril
@@ -145,7 +367,6 @@
     //Add frames - SPRITE
     _barrelFrames = [self loadSpriteSheetFromImageWithName:@"barrel.png" withNumberOfSprites:4 withNumberOfRows:1 withNumberOfSpritesPerRow:4];
 
-    
     //Cria as animacoes
     SKAction *barrelAnim = [SKAction animateWithTextures:_barrelFrames timePerFrame:0.1f];
     SKAction *moveBarrelLeft = [SKAction moveTo:CGPointMake(-120, barrelLEFT.position.y) duration:6];
@@ -170,6 +391,7 @@
     [_listaObstaculos addObject:barrelUP];
 }
 
+//Barril Simples
 -(void)createBarril{
     
     //Cria Barril
@@ -202,6 +424,7 @@
     [_listaObstaculos addObject:barrel];
 }
 
+//Pedra
 -(void)createPedra{
     
     SKSpriteNode *pedra;
@@ -231,166 +454,10 @@
     [_listaObstaculos addObject:pedra];
 }
 
--(NSMutableArray*)loadSpriteSheetFromImageWithName:(NSString*)name withNumberOfSprites:(int)numSprites withNumberOfRows:(int)numRows withNumberOfSpritesPerRow:(int)numSpritesPerRow {
-    NSMutableArray* animationSheet = [NSMutableArray array];
-    
-    SKTexture* mainTexture = [SKTexture textureWithImageNamed:name];
-    
-    for(int j = numRows-1; j >= 0; j--) {
-        for(int i = 0; i < numSpritesPerRow; i++) {
-            
-            SKTexture* part = [SKTexture textureWithRect:CGRectMake(i*(1.0f/numSpritesPerRow), j*(1.0f/numRows), 1.0f/numSpritesPerRow, 1.0f/numRows) inTexture:mainTexture];
-            
-            [animationSheet addObject:part];
-            
-            if(animationSheet.count == numSprites)
-                break;
-        }
-        
-        if(animationSheet.count == numSprites)
-            break;
-        
-    }
-    return animationSheet;
-}
 
--(void)createPlayButton{
-    _playNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
-    _playNode.fontSize = 50;
-    _playNode.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
-    _playNode.fontColor = [UIColor redColor];
-    _playNode.text = @"PLAY";
-    [self addChild:_playNode];
-}
-
--(void)testBodyWithImages{
-    _moto = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithRed:0.4f green:0.5f blue:0.7f alpha:1.0f] size:CGSizeMake(120, 35)];
-    _moto.position = CGPointMake(120, 500);
-    _moto.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:CGSizeMake(120, 35)];
-    _moto.physicsBody.dynamic = YES;
-    _moto.physicsBody.affectedByGravity = YES;
-    _moto.physicsBody.allowsRotation = YES;
-    _moto.physicsBody.density = 0.6f;
-    _moto.physicsBody.restitution = 0.3;
-
-    SKSpriteNode* imagemMoto = [SKSpriteNode spriteNodeWithImageNamed:@"moto1.png"];
-    [imagemMoto setSize:CGSizeMake(150, 133)];
-    [imagemMoto setPosition:CGPointMake(120, 500)];
-    [self addChild:imagemMoto];
-
-    [self addChild:self.moto];
-    
-    _transparencia = 1;
-}
-
--(void)removeObstaculos{
-    for (SKSpriteNode* no in _listaObstaculos) {
-        [no removeAllActions];
-        [no removeFromParent];
-    }
-}
-
--(void)didBeginContact:(SKPhysicsContact *)contact{
-    if((contact.bodyA.categoryBitMask == cabecaCategory || contact.bodyB.categoryBitMask == cabecaCategory) && (contact.bodyA.categoryBitMask != bordaCategory && contact.bodyB.categoryBitMask != bordaCategory)){
-            NSLog(@"morreu");
-        
-        _anterior = _metros;
-        if(_metros > _recorde){
-            _recorde = _metros;
-        }
-        [_prefs setInteger:_recorde forKey:@"recorde"];
-        [_prefs setInteger:_anterior forKey:@"anterior"];
-        [_prefs synchronize];
-        
-        
-        [_tempoObstaculos invalidate];
-        _tempoObstaculos = nil;
-        
-        
-        [_tempoPontos invalidate];
-        _tempoPontos = nil;
-        
-        [self mataTime];
-        
-        [_tempoNuvem invalidate];
-        _tempoNuvem = nil;
-        
-        [_cloud removeAllActions];
-        [_cloud2 removeAllActions];
-//        [_barrel removeAllActions];
-        
-        [_cabeca removeFromParent];
-        [_leftWheelNode removeFromParent];
-        [_rightWheelNode removeFromParent];
-        [_moto removeFromParent];
-        [_cloud removeFromParent];
-        [_cloud2 removeFromParent];
-        [_background removeFromParent];
-//        [_barrel removeFromParent];
-        [_pontosNode removeFromParent];
-        [_recordeNode removeFromParent];
-        [_anteriorNode removeFromParent];
-        
-        [self removeObstaculos];
-        
-        _cabeca = nil;
-        _leftWheelNode = nil;
-        _rightWheelNode = nil;
-        _moto = nil;
-        _cloud = nil;
-        _cloud2 = nil;
-        _background = nil;
-//        _barrel = nil;
-        _pontosNode = nil;
-        _recordeNode = nil;
-        _anteriorNode = nil;
-        
-        [_listaObstaculos removeAllObjects];
-        
-        [self criaFrameFundo];
-        [self criaMoto];
-        [self createRodas];
-        [self createCabeca];
-        [self createPlayButton];
-        
-        _firstTouch = YES;
-    }
-}
-
--(void)criaFrameFundo{
-    
-    NSMutableArray *backgroundFrame = [NSMutableArray array];
-    SKTextureAtlas *bgAnimationAtlas = [SKTextureAtlas atlasNamed:@"Background"];
-    
-    int numImages = bgAnimationAtlas.textureNames.count;
-    for (int i = 1; i <= numImages / 2; i++) {
-        NSString *textureName = [NSString stringWithFormat:@"background%d", i];
-        SKTexture *temp = [bgAnimationAtlas textureNamed:textureName];
-        [backgroundFrame addObject:temp];
-    }
-    
-    _backgroundFrames = backgroundFrame;
-    
-    SKTexture *temp = _backgroundFrames[0];
-    _background = [SKSpriteNode spriteNodeWithTexture:temp];
-    _background.size = CGSizeMake(768, 580);
-    _background.position = CGPointMake(384, 512);
-    [self addChild:_background];
-    [self backgroundFrames];
-    
-}
-
--(void)moverFundo
-{
-    [_background runAction:[SKAction repeatActionForever:
-                            [SKAction animateWithTextures:_backgroundFrames
-                                             timePerFrame:0.2f
-                                                   resize:NO
-                                                  restore:YES]] withKey:@"movendoFundo"];
-    return;
-}
-
-
+/************
+ MOTO
+ ***********/
 -(void)criaMoto{
     
     NSMutableArray *motoFrame = [NSMutableArray array];
@@ -414,6 +481,23 @@
     _moto.physicsBody.allowsRotation = YES;
     [self addChild:_moto];
     [self motoFrames];
+}
+
+-(void)moverMoto{
+    [_moto runAction:[SKAction repeatActionForever:
+                      [SKAction animateWithTextures:_motoFrames
+                                       timePerFrame:0.1f
+                                             resize:NO
+                                            restore:YES]] withKey:@"ridingMoto"];
+    return;
+}
+
+-(void)empina{
+    [_moto.physicsBody applyTorque:12];
+}
+
+-(void)desempina{
+    [_moto.physicsBody applyTorque:-10];
 }
 
 -(void)createRodas{
@@ -461,6 +545,9 @@
     [self.physicsWorld addJoint:headJoint];
 }
 
+
+
+//Physics Body Chao
 -(void)createChao{
     _chao = [SKSpriteNode spriteNodeWithColor:[UIColor colorWithRed:0.8f green:0.68f blue:0.3f alpha:1.0f] size:CGSizeMake(self.size.width, 40)];
     
@@ -477,6 +564,7 @@
     [self addChild:_chao];
 }
 
+//Physic Body Paredes
 -(void)createBordas{
     CGRect borderRect = CGRectMake(0, 0, self.size.width, self.size.height);
     self.physicsBody = [SKPhysicsBody bodyWithEdgeLoopFromRect:borderRect];
@@ -485,26 +573,42 @@
     self.physicsBody.contactTestBitMask = cabecaCategory;
 }
 
--(void)moverMoto
-{
-    [_moto runAction:[SKAction repeatActionForever:
-                      [SKAction animateWithTextures:_motoFrames
-                                       timePerFrame:0.1f
-                                             resize:NO
-                                            restore:YES]] withKey:@"ridingMoto"];
+
+//Frames Fundo com Atlas
+-(void)criaFrameFundo{
+    
+    NSMutableArray *backgroundFrame = [NSMutableArray array];
+    SKTextureAtlas *bgAnimationAtlas = [SKTextureAtlas atlasNamed:@"Background"];
+    
+    int numImages = bgAnimationAtlas.textureNames.count;
+    for (int i = 1; i <= numImages / 2; i++) {
+        NSString *textureName = [NSString stringWithFormat:@"background%d", i];
+        SKTexture *temp = [bgAnimationAtlas textureNamed:textureName];
+        [backgroundFrame addObject:temp];
+    }
+    
+    _backgroundFrames = backgroundFrame;
+    
+    SKTexture *temp = _backgroundFrames[0];
+    _background = [SKSpriteNode spriteNodeWithTexture:temp];
+    _background.size = CGSizeMake(768, 580);
+    _background.position = CGPointMake(384, 512);
+    [self addChild:_background];
+    [self backgroundFrames];
+    
+}
+
+//Inicia movimento Fundo
+-(void)moverFundo{
+    [_background runAction:[SKAction repeatActionForever:
+                            [SKAction animateWithTextures:_backgroundFrames
+                                             timePerFrame:0.2f
+                                                   resize:NO
+                                                  restore:YES]] withKey:@"movendoFundo"];
     return;
 }
 
-
--(void)empina{
-    //[_rightWheelNode.physicsBody applyImpulse:CGVectorMake(0, 20)];
-    [_moto.physicsBody applyTorque:12];
-}
--(void)desempina{
-//    [_rightWheelNode.physicsBody applyImpulse:CGVectorMake(0, -20)];
-    [_moto.physicsBody applyTorque:-10];
-}
-
+//Nuvem 1
 -(void)moverNuvens{
     
     _cloud = [SKSpriteNode spriteNodeWithImageNamed:@"cloud.png"];
@@ -521,6 +625,7 @@
     _tempoNuvem = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(moverNuvem2) userInfo:nil repeats:NO];
 }
 
+//Nuvem 2
 -(void)moverNuvem2{
     
     _cloud2 = [SKSpriteNode spriteNodeWithImageNamed:@"cloud.png"];
@@ -535,65 +640,28 @@
     [_cloud2 runAction:[SKAction repeatActionForever:sequenceCloud2]];
 }
 
--(void)incrementaMetros{
-    _metros += 1.7361111125;
-    _pontosNode.text = [NSString stringWithFormat:@"Distancia: %ld metros", _metros];
-}
-
--(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    /* Called when a touch begins */
+//Cria as Frames
+-(NSMutableArray*)loadSpriteSheetFromImageWithName:(NSString*)name withNumberOfSprites:(int)numSprites withNumberOfRows:(int)numRows withNumberOfSpritesPerRow:(int)numSpritesPerRow {
+    NSMutableArray* animationSheet = [NSMutableArray array];
     
-    if(_firstTouch){
-        _moto.physicsBody.dynamic = YES;
-        
-        [self moverMoto];
-        [self moverFundo];
-        [self moverNuvens];
-        
-        _tempoObstaculos = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(createObstaculos) userInfo:nil repeats:YES];
-        
-        [_playNode removeFromParent];
-        
-        [self criaPontos];
-        
-        _tempoPontos = [NSTimer scheduledTimerWithTimeInterval:0.125 target:self selector:@selector(incrementaMetros) userInfo:nil repeats:YES];
-        
-        _firstTouch = NO;
-    }
-    else{
-        for (UITouch *touch in touches) {
-            CGPoint location = [touch locationInNode:self];
-        
-            if(location.x > self.size.width/2){
-                [self mataTime];
-                NSTimer* empinaTime = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(empina) userInfo:nil repeats:YES];
-                [_timeArray addObject:empinaTime];        }
-            else{
-                [self mataTime];
-                NSTimer* empinaTime = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(desempina) userInfo:nil repeats:YES];
-                [_timeArray addObject:empinaTime];
-            }
+    SKTexture* mainTexture = [SKTexture textureWithImageNamed:name];
+    
+    for(int j = numRows-1; j >= 0; j--) {
+        for(int i = 0; i < numSpritesPerRow; i++) {
+            
+            SKTexture* part = [SKTexture textureWithRect:CGRectMake(i*(1.0f/numSpritesPerRow), j*(1.0f/numRows), 1.0f/numSpritesPerRow, 1.0f/numRows) inTexture:mainTexture];
+            
+            [animationSheet addObject:part];
+            
+            if(animationSheet.count == numSprites)
+                break;
         }
+        
+        if(animationSheet.count == numSprites)
+            break;
+        
     }
-}
-
--(void)mataTime{
-    for (NSTimer* tempo in _timeArray) {
-        [tempo invalidate];
-        [_timeArray removeObject:tempo];
-    }
-}
-
--(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
-    [self mataTime];
-}
-
--(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event{
-    [self mataTime];
-}
-
--(void)update:(CFTimeInterval)currentTime {
-    /* Called before each frame is rendered */
+    return animationSheet;
 }
 
 @end
